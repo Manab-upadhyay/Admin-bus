@@ -1,12 +1,12 @@
 'use client'
 import { Grid, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-// components
-import SalesOverview from '@/app/(DashboardLayout)/components/dashboard/SalesOverview';
+
+import BusPerformanceOverview from '@/app/(DashboardLayout)/components/dashboard/functionoverview';
 import DailyActivity from '@/app/(DashboardLayout)/components/dashboard/DailyActivity';
-import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
+import BusPerformance from '@/app/(DashboardLayout)/components/dashboard/busperformance';
 import UsersJoined from './components/dashboard/userjoined';
-import BlogCard from '@/app/(DashboardLayout)/components/dashboard/Blog';
+
 
 const Dashboard = () => {
   return (
@@ -14,20 +14,20 @@ const Dashboard = () => {
     <Box mt={3}>
       <Grid container spacing={3}>
         <Grid item xs={12} lg={12}>
-          <SalesOverview />
+          <BusPerformanceOverview />
         </Grid>
         {/* ------------------------- row 1 ------------------------- */}
         <Grid item xs={12} lg={4}>
           <DailyActivity />
         </Grid>
         <Grid item xs={12} lg={8}>
-          <ProductPerformance />
+          <BusPerformance />
         </Grid>
         <Grid item xs={12} lg={8}>
          <UsersJoined/>
         </Grid>
         <Grid item xs={12} lg={12}>
-          <BlogCard />
+         
         </Grid>
       </Grid>
     </Box>

@@ -29,7 +29,7 @@ interface Props {
 export default function RootLayout({ children }: Props) {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null; // Ensure window is defined
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null; 
 
   return (
     <MainWrapper className="mainwrapper">
