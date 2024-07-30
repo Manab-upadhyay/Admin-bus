@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
+import jwt from 'jsonwebtoken'
 import Link from "next/link";
 import {
   Box,
@@ -25,12 +26,38 @@ import {
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  
+  const[name, setname]= useState()
+  useEffect(() => {
+    function getToken() {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const decodedToken = jwt.decode(token);
+        console.log(decodedToken)
+        if (decodedToken && decodedToken.email) {
+          setname(decodedToken.email);
+        }
+    
+      }
+    }
+    getToken();
+  }, []);
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
+  function handdleLogout(){
+    let token= localStorage.getItem('token');
+    if(token){
+      localStorage.removeItem('token');
+      window.location.reload()
+    }
+    else{
+      console.log("no token found")
+    }
+  }
 
   const theme = useTheme();
   const primary = theme.palette.primary.main;
@@ -106,7 +133,7 @@ const Profile = () => {
             fontWeight="400"
             sx={{ ml: 1 }}
           >
-            Hi,
+            Hi,{name}
           </Typography>
           <Typography
             variant="h5"
@@ -143,25 +170,12 @@ const Profile = () => {
 
         <Box pt={0}>
 
-          <List>
-            <ListItemButton component="a" href="#">
-              <ListItemText primary="Edit Profile" />
-            </ListItemButton>
-            <ListItemButton component="a" href="#">
-              <ListItemText primary="Account" />
-            </ListItemButton>
-            <ListItemButton component="a" href="#">
-              <ListItemText primary="Change Password" />
-            </ListItemButton>
-            <ListItemButton component="a" href="#">
-              <ListItemText primary="My Settings" />
-            </ListItemButton>
-          </List>
+        
 
         </Box>
         <Divider />
         <Box mt={2}>
-          <Button fullWidth variant="contained" color="primary">
+          <Button fullWidth variant="contained" color="primary" onClick={handdleLogout}>
             Logout
           </Button>
         </Box>

@@ -3,8 +3,8 @@ import {
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
-
 const Menuitems = [
+
   {
     id: uniqueId(),
     title: "Dashboard",
@@ -13,16 +13,11 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Buttons",
+    title: "Bus Detaile",
     icon: IconCircleDot,
     href: "/ui-components/buttons",
   },
-  {
-    id: uniqueId(),
-    title: "Forms",
-    icon: IconTable,
-    href: "/ui-components/forms",
-  },
+  
   {
     id: uniqueId(),
     title: "Alerts",
@@ -37,22 +32,11 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Images",
-    icon: IconPhoto,
-    href: "/ui-components/images",
-  },
-  {
-    id: uniqueId(),
-    title: "Pagination",
-    icon: IconUser,
-    href: "/ui-components/pagination",
-  },
-  {
-    id: uniqueId(),
-    title: "Tables",
-    icon: IconLayoutGrid,
+    title: "Reports",
+    icon:IconInfoCircle,
     href: "/ui-components/table",
   },
+  
 ];
 
 export default Menuitems;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Box,
@@ -12,42 +12,34 @@ import {
 } from "@mui/material";
 import BaseCard from "../shared/DashboardCard";
 
-const buses = [
-  {
-    id: "1",
-    driver: "Sunil Joshi",
-    route: "Route A",
-    status: "On Time",
-    statusColor: "success.main",
-    fuelConsumption: "30",
-  },
-  {
-    id: "2",
-    driver: "Andrew McDownland",
-    route: "Route B",
-    status: "Delayed",
-    statusColor: "warning.main",
-    fuelConsumption: "45",
-  },
-  {
-    id: "3",
-    driver: "Christopher Jamil",
-    route: "Route C",
-    status: "Maintenance",
-    statusColor: "error.main",
-    fuelConsumption: "20",
-  },
-  {
-    id: "4",
-    driver: "Nirav Joshi",
-    route: "Route D",
-    status: "On Time",
-    statusColor: "success.main",
-    fuelConsumption: "25",
-  },
-];
-
 const BusPerformance = () => {
+  const [bus, setBus] = useState([]);
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const res = await fetch("http://localhost:6969/api/bus-data");
+        const result = await res.json();
+        setBus(result);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+    getData();
+  }, []);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Running":
+        return "success.main"; 
+      case "Stopped":
+      case "Cancelled":
+        return "error.main"; 
+      default:
+        return "default"; 
+    }
+  };
+
   return (
     <BaseCard title="Bus Performance">
       <TableContainer
@@ -56,6 +48,8 @@ const BusPerformance = () => {
             xs: "274px",
             sm: "100%",
           },
+          maxHeight: 400, // Set a maximum height for the container
+          overflowY: 'auto', // Enable vertical scrolling
         }}
       >
         <Table
@@ -79,12 +73,22 @@ const BusPerformance = () => {
               </TableCell>
               <TableCell>
                 <Typography color="textSecondary" variant="h6">
-                  Route
+                  Starting
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography color="textSecondary" variant="h6">
+                  Destination
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography color="textSecondary" variant="h6">
                   Status
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography color="textSecondary" variant="h6">
+                  Timing
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -95,25 +99,35 @@ const BusPerformance = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {buses.map((bus) => (
-              <TableRow key={bus.id}>
+            {bus?.map((buses) => (
+              <TableRow key={buses?.busId}>
                 <TableCell>
                   <Typography fontSize="15px" fontWeight={500}>
-                    {bus.id}
+                    {buses?.busId}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
                     <Box>
                       <Typography variant="h6" fontWeight={600}>
-                        {bus.driver}
+                        {buses?.driverName}
                       </Typography>
                     </Box>
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
-                    {bus.route}
+                    {buses?.starting}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography color="textSecondary" variant="h6">
+                    {buses?.destination}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography color="textSecondary" variant="h6">
+                    {buses?.timing}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -121,15 +135,15 @@ const BusPerformance = () => {
                     sx={{
                       pl: "4px",
                       pr: "4px",
-                      backgroundColor: bus.statusColor,
+                      backgroundColor: getStatusColor(buses?.status),
                       color: "#fff",
                     }}
                     size="small"
-                    label={bus.status}
+                    label={buses?.status}
                   ></Chip>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="h6">{bus.fuelConsumption}L</Typography>
+                  <Typography variant="h6">{buses?.fuelConsumption}L</Typography>
                 </TableCell>
               </TableRow>
             ))}
