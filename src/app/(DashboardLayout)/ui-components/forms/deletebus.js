@@ -1,24 +1,44 @@
 import { useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import BusDetails from "../buttons/page";
-import Modal from "../buttons/Modal";
+import Modal from "../buttons/modal";
+import AutocompleteInput from "../buttons/autocom"; // Import the AutocompleteInput component
+import TimePicker from 'react-time-picker';
+import moment from 'moment';
 
 export default function Deletebus() {
-  const [delbusid, setdelbusid] = useState("");
-  const [timing, settiming] = useState("");
-  const [clicked, setclicked] = useState(false);
+  const [delbusid, setDelbusid] = useState("");
+  const [timing, setTiming] = useState("");
+  const [clicked, setClicked] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
+  const [busIdSuggestions, setBusIdSuggestions] = useState([]);
+  const [time, setTime] = useState("");
 
-  const handleBusIdChange = (e) => {
-    const value = e.target.value;
-    if (!isNaN(value)) {
-      setdelbusid(value);
-    }
+  const fetchSuggestions = (query) => {
+    const suggestions = ["S-1", "S-2", "S-3", "S-4", "S-5", "S-6", "S-7", "S-8", "S-9", "S-10", "S-11", "S-12", "S-13", "S-14", "S-15", "S-16", "S-17", "S-18", "S-19"];
+    return suggestions.filter(suggestion => 
+      suggestion.toLowerCase().includes(query.toLowerCase())
+    );
   };
 
-  const handleTimeChange = (e) => {
-    settiming(e.target.value);
+  const handleSuggestionsFetchRequested = (value) => {
+    const suggestions = fetchSuggestions(value);
+    setBusIdSuggestions(suggestions);
+  };
+
+  const handleSuggestionsClearRequested = () => {
+    setBusIdSuggestions([]);
+  };
+
+  const handleBusIdChange = (e, value) => {
+    setDelbusid(value);
+  };
+
+  const handleTimeChange = (value) => {
+    const formattedTime = moment(value, 'HH:mm').format('hh:mm a').toUpperCase();
+    setTiming(formattedTime);
+    setTime(value);
   };
 
   const handleDelete = (e) => {
@@ -33,7 +53,7 @@ export default function Deletebus() {
   const handleConfirm = async () => {
     setShowModal(false);
     try {
-      const data = { busId: `S-${delbusid}`, timing: timing };
+      const data = { busId: delbusid, timing: timing };
       const res = await fetch("http://localhost:6969/api/delete", {
         method: "POST",
         body: JSON.stringify(data),
@@ -42,13 +62,12 @@ export default function Deletebus() {
         },
       });
       const result = await res.json();
-      if(result.message=="success"){
+      if(result.message === "success") {
         console.log(result);
-        setclicked(true);
+        setClicked(true);
+      } else if(result.message === "no bus found") {
+        setError(result.message);
       }
-     if(result.message=="no bus found"){
-      setError(result.message)
-     }
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +78,7 @@ export default function Deletebus() {
   };
 
   const back = () => {
-    setclicked(true);
+    setClicked(true);
   };
 
   if (clicked) {
@@ -80,20 +99,16 @@ export default function Deletebus() {
             htmlFor="bus-id"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Enter Bus id
+            Enter Bus ID
           </label>
-          <div className="flex items-center">
-            <span className="text-sm text-gray-900 dark:text-white">S-</span>
-            <input
-              type="text"
-              id="bus-id"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=""
-              onChange={handleBusIdChange}
-              value={delbusid}
-              required
-            />
-          </div>
+          <AutocompleteInput
+            suggestions={busIdSuggestions}
+            value={delbusid}
+            onChange={handleBusIdChange}
+            onSuggestionsFetchRequested={(value) => handleSuggestionsFetchRequested(value)}
+            onSuggestionsClearRequested={handleSuggestionsClearRequested}
+         
+          />
         </div>
 
         <div className="relative z-0 w-full mb-10 group">
@@ -101,16 +116,13 @@ export default function Deletebus() {
             htmlFor="timing"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Enter time
+            Enter Time
           </label>
-          <input
-            type="text"
-            id="timing"
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=""
+          <TimePicker
             onChange={handleTimeChange}
-            value={timing}
-            required
+            value={time}
+            format="hh:mm a"
+            className="my-10"
           />
         </div>
 
@@ -134,8 +146,8 @@ export default function Deletebus() {
         </div>
       </form>
       <Modal show={showModal} handleClose={handleClose} handleConfirm={handleConfirm}>
-        <h2 className="text-xl font-bold mb-4">Confirm Add Bus</h2>
-        <p>Are you sure you want to add this bus?</p>
+        <h2 className="text-xl font-bold mb-4">Confirm Delete Bus</h2>
+        <p>Are you sure you want to delete this bus?</p>
       </Modal>
     </>
   );

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
@@ -9,7 +9,6 @@ import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 import TimelineDot from "@mui/lab/TimelineDot";
 import DashboardCard from "../shared/DashboardCard";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
-import { useState, useEffect } from "react";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -29,6 +28,7 @@ const UserActivity = () => {
           .map((log) => ({
             time: new Date(log.lastLogin).toLocaleTimeString(),
             date: new Date(log.lastLogin).toLocaleDateString(),
+            timestamp: new Date(log.lastLogin),
             color: "success.main",
             text: "User logged in",
             category: "login",
@@ -37,13 +37,19 @@ const UserActivity = () => {
         const filteredReports = result1.map((report) => ({
           time: new Date(report.date).toLocaleTimeString(),
           date: new Date(report.date).toLocaleDateString(),
+          timestamp: new Date(report.date),
           color: "error.main",
           text: "User reported",
           category: "report",
         }));
 
-        setActivities([...filteredLogin, ...filteredReports]);
-        console.log("Combined activities: ", [...filteredLogin, ...filteredReports]);
+        const combinedActivities = [...filteredLogin, ...filteredReports];
+
+        // Sort combined activities by timestamp in descending order
+        combinedActivities.sort((a, b) => b.timestamp - a.timestamp);
+
+        setActivities(combinedActivities);
+        console.log("Combined activities: ", combinedActivities);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -87,10 +93,9 @@ const UserActivity = () => {
       <Timeline
         sx={{
           p: 0,
-           maxHeight: 400, // Set a maximum height for the container
-          overflowY: 'auto'
+          maxHeight: 400, // Set a maximum height for the container
+          overflowY: "auto",
         }}
-        
       >
         {activities.map((activity, index) => (
           <TimelineItem key={index}>

@@ -12,10 +12,14 @@ import {
   Badge,
 } from "@mui/material";
 import BaseCard from "../../components/shared/DashboardCard";
+import Modal from "../buttons/modal";
+import { MdDelete } from "react-icons/md";
 
-const Reoport = () => {
+const Report = () => {
   const [report, setReport] = useState([]);
   const [newReports, setNewReports] = useState(false);
+  const [model, setModel] = useState(false);
+  const [id, setId] = useState();
 
   useEffect(() => {
     async function getData() {
@@ -34,6 +38,34 @@ const Reoport = () => {
   const handleReportClick = () => {
     setNewReports(false); // Reset new reports status when the section is clicked
   };
+
+  function handleClose() {
+    setModel(false);
+  }
+
+  async function handleConfirm() {
+    try {
+      const res = await fetch("http://localhost:6969/api/delete/report", {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id })
+      });
+      const result = await res.json();
+      console.log(result);
+
+      setModel(false);
+      setReport(report.filter((rep) => rep._id !== id));
+    } catch (error) {
+      console.error("Error deleting report:", error);
+    }
+  }
+
+  function handleDelete(rid) {
+    setId(rid);
+    setModel(true);
+  }
 
   return (
     <BaseCard
@@ -82,11 +114,17 @@ const Reoport = () => {
           </TableHead>
           <TableBody>
             {report?.map((rep) => (
-              <TableRow key={rep?.name}>
+              <TableRow key={rep?._id}>
                 <TableCell>
-                  <Typography fontSize="15px" fontWeight={500}>
-                    {rep?.name}
-                  </Typography>
+                  <div className="flex justify-start">
+                    <MdDelete 
+                      onClick={() => handleDelete(rep._id)}
+                      className="my-1 cursor-pointer"
+                    />
+                    <Typography fontSize="15px" fontWeight={500}>
+                      {rep?.name}
+                    </Typography>
+                  </div>
                 </TableCell>
                 <TableCell>
                   <Typography fontSize="15px" fontWeight={500}>
@@ -107,8 +145,11 @@ const Reoport = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Modal show={model} handleClose={handleClose} handleConfirm={handleConfirm}>
+        <p>Do you want to delete this report?</p>
+      </Modal>
     </BaseCard>
   );
 };
 
-export default Reoport;
+export default Report;

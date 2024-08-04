@@ -16,6 +16,8 @@ import BaseCard from "../../components/shared/DashboardCard";
 import Addbus from "../buttons/addbus";
 import Updatebus from "../forms/page";
 import Deletebus from "../forms/deletebus";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const BusDetails = () => {
   const [bus, setBus] = useState([]);
@@ -105,6 +107,18 @@ const BusDetails = () => {
 
   return (
     <BaseCard title="Bus List">
+     <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <form className="max-w-lg mx-54" onSubmit={handdleSubmit}>
         <div className="flex relative">
           <label htmlFor="search-dropdown" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">

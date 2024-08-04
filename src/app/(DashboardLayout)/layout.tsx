@@ -5,6 +5,8 @@ import Header from "@/app/(DashboardLayout)/layout/header/Header";
 import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
 import Footer from "./layout/footer/page";
 import "../global.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Ensure this is imported
 import Admin from "../admin/page"; // Import correctly
 
 const MainWrapper = styled("div")(() => ({
@@ -29,10 +31,22 @@ interface Props {
 export default function RootLayout({ children }: Props) {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null; 
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
   return (
     <MainWrapper className="mainwrapper">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       {token ? (
         <>
           {/* Sidebar */}

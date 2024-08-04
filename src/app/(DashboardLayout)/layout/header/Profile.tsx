@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken"
 import Link from "next/link";
 import {
   Box,
@@ -14,6 +14,8 @@ import {
   List,
   ListItemText,
 } from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 
 import { Stack } from "@mui/system";
 import {
@@ -23,9 +25,11 @@ import {
   IconMail,
   IconShield,
 } from "@tabler/icons-react";
+import Modal from "../../ui-components/buttons/modal";
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const[model,setmodel]= useState(false)
   
   const[name, setname]= useState()
   useEffect(() => {
@@ -48,10 +52,17 @@ const Profile = () => {
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
+  function logout(){
+    setmodel(true)
+  }
+  function handleClose(){
+    setmodel(false)
+  }
   function handdleLogout(){
     let token= localStorage.getItem('token');
     if(token){
       localStorage.removeItem('token');
+      toast.success("loged-out")
       window.location.reload()
     }
     else{
@@ -175,12 +186,15 @@ const Profile = () => {
         </Box>
         <Divider />
         <Box mt={2}>
-          <Button fullWidth variant="contained" color="primary" onClick={handdleLogout}>
+          <Button fullWidth variant="contained" color="primary" onClick={logout}>
             Logout
           </Button>
         </Box>
-
+        <Modal show={model} handleClose={handleClose} handleConfirm={handdleLogout}>
+        <p>Do you want to delete this report?</p>
+      </Modal>
       </Menu>
+     
     </Box>
   );
 };

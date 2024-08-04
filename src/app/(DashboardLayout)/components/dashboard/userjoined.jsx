@@ -13,15 +13,18 @@ import {
 import BaseCard from "../shared/DashboardCard";
 
 const UsersJoined = () => {
-  const [user, setUser] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     async function getData() {
       try {
         const res = await fetch('http://localhost:6969/api/getUsers');
         const result = await res.json();
-    
-        setUser(result);
+
+        // Sort users by lastLogin date, assuming it's a valid date string
+        const sortedUsers = result.sort((a, b) => new Date(b.lastLogin) - new Date(a.lastLogin));
+
+        setUsers(sortedUsers);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -67,41 +70,45 @@ const UsersJoined = () => {
               </TableCell>
               <TableCell>
                 <Typography color="textSecondary" variant="h6">
-                 Last login
+                  Last login
                 </Typography>
               </TableCell>
-             
+              <TableCell>
+                <Typography color="textSecondary" variant="h6">
+                  Avatar
+                </Typography>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {user.map((users) => (
-              <TableRow key={users._id}> {/* Use _id if your MongoDB schema uses _id */}
+            {users.map((user) => (
+              <TableRow key={user._id}> {/* Use _id if your MongoDB schema uses _id */}
                 <TableCell>
                   <Typography fontSize="15px" fontWeight={500}>
-                    {users._id} {/* Use _id if your MongoDB schema uses _id */}
+                    {user._id} {/* Use _id if your MongoDB schema uses _id */}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Box display="flex" alignItems="center">
                     <Box>
                       <Typography variant="h6" fontWeight={600}>
-                        {users.username}
+                        {user.username}
                       </Typography>
                     </Box>
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
-                    {users.email}
+                    {user.email}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
-                    {users.lastLogin}
+                    {user.lastLogin}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Avatar src={users.avatar} alt={users.name} />
+                  <Avatar src={user.avatar} alt={user.username} />
                 </TableCell>
               </TableRow>
             ))}
