@@ -36,7 +36,12 @@ const Menuitems = [
     icon:IconInfoCircle,
     href: "/ui-components/table",
   },
-  
+  {
+    id: uniqueId(),
+    title: "User complains",
+    icon:IconInfoCircle,
+    href: "/ui-components/complains",
+  },
 ];
 
 export default Menuitems;
