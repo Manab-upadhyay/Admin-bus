@@ -20,7 +20,7 @@ export async function POST(req:NextRequest) {
  console.log(admin)
 console.log(admin.usermail)
 console.log("password",admin.Password)
-var token = jwt.sign({ email: admin.usermail }, 'secret_key', { expiresIn: '1h' });
+var token = jwt.sign({ admin }, 'secret_key', { expiresIn: '1h' });
    if (admin&&body.password==admin.Password){
 console.log("done")
         return Response.json( {

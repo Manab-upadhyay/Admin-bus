@@ -99,8 +99,8 @@ const BusPerformance = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {bus?.map((buses) => (
-              <TableRow key={buses?.busId}>
+            {bus?.map((buses,index) => (
+              <TableRow key={index}>
                 <TableCell>
                   <Typography fontSize="15px" fontWeight={500}>
                     {buses?.busId}

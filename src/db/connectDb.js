@@ -1,11 +1,11 @@
 // db.js
 const mongoose = require('mongoose');
-
-
-
+require('dotenv').config();
 const connectDB = async () => {
     try {
-        await mongoose.connect('mongodb+srv://manabupadhyay123:hekmBIls9VQ2gKlo@cluster0.msockze.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+        await mongoose.connect(process.env.MONGO_URL, {
+            useNewUrlParser: true,  // Use the new URL parser
+            useUnifiedTopology: true,  // Use the new Server Discover and Monitoring engine
         });
         console.log('MongoDB connected successfully');
     } catch (err) {
@@ -13,8 +13,5 @@ const connectDB = async () => {
         process.exit(1); // Exit process with failure
     }
 };
-
-
-
 
 module.exports = connectDB;
